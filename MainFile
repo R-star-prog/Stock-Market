@@ -1,0 +1,178 @@
+
+
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
+
+
+
+
+
+
+
+
+
+
+public class MainClass {
+
+	public static void main(String[] args)throws IOException {
+		// TODO Auto-generated method stub
+
+		String price = pull();
+		
+		
+		
+		System.out.println(price);
+	}
+	
+	
+	public static String pull() throws IOException{
+		
+	
+		URL url = new URL("https://www.google.com/finance/quote/.DJI:INDEXDJX");
+		
+		
+		URLConnection urlCon = url.openConnection();
+
+		
+		
+	
+		
+		urlCon.addRequestProperty("User-Agent",	"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+		
+		//urlCon.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0)");
+		InputStreamReader inStream = new InputStreamReader(urlCon.getInputStream());
+		
+		BufferedReader buff = new BufferedReader(inStream);
+		
+		String price = "";
+		String temp = "";
+		
+		
+		String line = buff.readLine();
+		
+		int dowJonesCtr = 0;
+		int nasDaqCtr = 0;
+		int spCrtr = 0;
+		int russCtr = 0;
+		
+		while(line != null) {
+			
+			//System.out.println(line);
+			
+			//DowJones Average
+			if(line.contains("\"Dow Jones Industrial Average\",1,null,[")) {
+				int target = line.indexOf("\"Dow Jones Industrial Average\",1,null,[");
+				int deci = line.indexOf(".",target);
+				int start = deci;
+				while(line.charAt(start) != '[') {
+					start--;
+				}
+				
+				if(dowJonesCtr == 0) {
+					price += "Dow Jones Industrial Average: ";
+					price += line.substring(start+1,deci+3);
+					price+='\n';
+				}
+				
+				//price+= "";	
+				dowJonesCtr++;
+				
+			}  
+			
+			
+			//Nasdaq Composite
+			 if (line.contains("\"Nasdaq Composite\",1,null,[")) {
+				
+				int target = line.indexOf("\"Nasdaq Composite\",1,null,[\"");
+				int deci = line.indexOf(".",target);
+				int start = deci;
+				while(line.charAt(start) != '[') {
+					start--;
+				}
+				//temp = line.substring(start+1,deci+3);
+				
+				if(nasDaqCtr == 0) {
+					
+					price+= "NasDaq Composite: ";
+					price += line.substring(start+1,deci+3);
+					price+='\n';
+				}
+				
+				nasDaqCtr++;
+				
+				
+			}
+			
+			// S&P 500 Index 
+			 		 
+			 if (line.contains("\"S\\u0026P 500 Index\",1,null,[")) {
+					
+					int target = line.indexOf("\"S\\u0026P 500 Index\",1,null,[");
+					int deci = line.indexOf(".",target);
+					int start = deci;
+					while(line.charAt(start) != '[') {
+						start--;
+					}
+					//temp = line.substring(start+1,deci+3);
+					
+					if(spCrtr == 0) {
+						
+						price+= "S&P 500 Index: ";
+						price += line.substring(start+1,deci+3);
+						price+='\n';
+					}
+					
+					spCrtr++;
+					
+					
+				}
+			 
+			 
+			 // Russel 2000 Index
+			 
+			 if (line.contains("\"Russell 2000 Index\",1,null,[")) {
+					
+					int target = line.indexOf("\"Russell 2000 Index\",1,null,[");
+					int deci = line.indexOf(".",target);
+					int start = deci;
+					while(line.charAt(start) != '[') {
+						start--;
+					}
+					//temp = line.substring(start+1,deci+3);
+					
+					if(russCtr == 0) {
+						
+						price+= "Russel 2000 Index: ";
+						price += line.substring(start+1,deci+3);
+						price+='\n';
+					}
+					
+					russCtr++;
+					
+					
+				}
+			 
+			 
+			 
+			
+			
+			
+			
+			
+			line = buff.readLine();
+			
+		}
+		
+		
+		
+		//System.out.println("Temp Price: " + temp);
+				
+		return price;
+		
+	}
+
+}
